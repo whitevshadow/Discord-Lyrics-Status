@@ -1,0 +1,3 @@
+@echo off
+cd /d D:\projects\Lyrcis-main
+npm start dev
