@@ -8,13 +8,13 @@ COPY package*.json ./
 COPY tsconfig.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
-# Copy source code
-COPY src/ ./src/
+# Copy ALL project files
+COPY . .
 
-# Build TypeScript
-RUN npm run build || npx tsc
+# Build app
+RUN npm run build
 
 # Runtime stage
 FROM node:20-alpine
@@ -24,20 +24,20 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install only production dependencies
-RUN npm ci --only=production
+# Install production deps
+RUN npm install --omit=dev
 
-# Copy built application from builder stage
+# Copy build output
 COPY --from=builder /app/dist ./dist
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001
+# Copy static assets
+COPY --from=builder /app/static ./static
 
-USER nodejs
+# Copy resources if needed
+COPY --from=builder /app/res ./res
 
-# Expose port
+# Expose app port
 EXPOSE 8999
 
-# Start the application
+# Start app
 CMD ["node", "dist/index.js"]

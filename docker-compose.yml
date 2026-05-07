@@ -12,9 +12,8 @@ services:
     environment:
       - NODE_ENV=production
     volumes:
-      # Uncomment to persist configuration/settings
-      # - ./data:/app/data
-    logs:
+      - ./data:/app/data
+    logging:
       driver: "json-file"
       options:
         max-size: "10m"
