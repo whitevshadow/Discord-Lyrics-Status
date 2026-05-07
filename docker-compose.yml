@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  lyrics-status:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: discord-lyrics-status
+    restart: unless-stopped
+    ports:
+      - "8999:8999"
+    environment:
+      - NODE_ENV=production
+    volumes:
+      # Uncomment to persist configuration/settings
+      # - ./data:/app/data
+    logs:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
